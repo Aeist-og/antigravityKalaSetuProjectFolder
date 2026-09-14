@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>KalaSetu Expo Go Testing QR Code</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #FAF7F2;
+      color: #1D2A44;
+    }
+    .card {
+      background: #FFFFFF;
+      padding: 36px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 420px;
+      border: 1px solid #EAE5DC;
+    }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 26px;
+      color: #D9653B;
+      font-weight: 800;
+    }
+    p {
+      color: #555555;
+      font-size: 15px;
+      margin: 6px 0 16px 0;
+    }
+    .qr-box {
+      background: #FFFFFF;
+      padding: 16px;
+      display: inline-block;
+      border-radius: 16px;
+      border: 2px solid #EAE5DC;
+      margin-bottom: 20px;
+    }
+    .url-box {
+      font-family: monospace;
+      background: #F4EFE6;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #1D2A44;
+      font-weight: bold;
+      user-select: all;
+    }
+    .badge {
+      display: inline-block;
+      background: #E8F5E9;
+      color: #2E7D32;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">SDK 57 Active &amp; Ready</div>
+    <h1>KalaSetu Mobile Test</h1>
+    <p>Scan with <strong>Expo Go</strong> on your Android phone</p>
+    <div class="qr-box">
+      <img src="https://quickchart.io/qr?text=exp%3A%2F%2F192.168.29.130%3A8081&size=260" alt="KalaSetu QR Code" width="260" height="260" />
+    </div>
+    <p>Or tap "Enter URL manually" in Expo Go:</p>
+    <div class="url-box">exp://192.168.29.130:8081</div>
+  </div>
+</body>
+</html>

@@ -1,9 +1,7 @@
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps } from '@react-navigation/native';
+import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Colors, Typography, Spacing, Shadows } from '../../constants/colors';
 import { Header } from '../../components/common/Header';
@@ -28,7 +26,7 @@ export const ArtisanHomeScreen: React.FC<Props> = ({ navigation }) => {
   const [oppsCount, setOppsCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const loadData = useCallback(() => {
     if (user?.id) {
       setLoading(true);
       Promise.all([
@@ -42,6 +40,12 @@ export const ArtisanHomeScreen: React.FC<Props> = ({ navigation }) => {
         .finally(() => setLoading(false));
     }
   }, [user?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData])
+  );
 
   const handleStartNewProduct = async () => {
     await resetDraft();
@@ -86,7 +90,7 @@ export const ArtisanHomeScreen: React.FC<Props> = ({ navigation }) => {
           <View style={[styles.draftCard, Shadows.soft]}>
             <View style={styles.draftHeaderRow}>
               <Text style={styles.draftSectionTitle}>⚡ {t('home.continueDraftTitle')}</Text>
-              <Badge label={`Step ${draft?.currentStep || 1} of 7`} variant="accent" />
+              <Badge label={`Step ${draft?.currentStep || 1} of 8`} variant="accent" />
             </View>
 
             <View style={styles.draftContentRow}>
@@ -109,7 +113,7 @@ export const ArtisanHomeScreen: React.FC<Props> = ({ navigation }) => {
                   style={styles.resumeBtn}
                 >
                   <Text style={styles.resumeBtnText}>
-                    ▶ {t('home.resumeDraft')} ({draft.currentStep || 1}/7)
+                    ▶ {t('home.resumeDraft')} ({draft.currentStep || 1}/8)
                   </Text>
                 </TouchableOpacity>
               </View>

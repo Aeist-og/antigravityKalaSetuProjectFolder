@@ -5,12 +5,15 @@ import { Colors, Typography, Spacing, Shadows } from '../../constants/colors';
 import { Header } from '../../components/common/Header';
 import { Button } from '../../components/common/Button';
 import { UserRole } from '../../models/auth';
+import { useAuth } from '../../context/AuthContext';
+import { DEMO_ACCOUNTS } from '../../services/auth/authService';
 import { AuthStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'RoleSelect'>;
 
 export const RoleSelectScreen: React.FC<Props> = ({ navigation }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('artisan');
+  const { loginDemoAccount } = useAuth();
 
   const handleContinue = () => {
     // Lead directly to authentication for the chosen workspace
@@ -122,13 +125,23 @@ export const RoleSelectScreen: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.bottomCard}>
           <Button
-            title={`Enter ${roleLabels[selectedRole]} Portal →`}
-            onPress={handleContinue}
+            title={`⚡ Quick Demo: Enter as ${roleLabels[selectedRole]} →`}
+            onPress={() => {
+              const demo = DEMO_ACCOUNTS.find(d => d.role === selectedRole) || DEMO_ACCOUNTS[0];
+              loginDemoAccount(demo);
+            }}
             size="lg"
             style={styles.continueBtn}
           />
+          <Button
+            title={`Sign In / Create Account →`}
+            onPress={handleContinue}
+            variant="outline"
+            size="md"
+            style={styles.secondaryBtn}
+          />
           <Text style={styles.authNotice}>
-            Next step: Log in or create your authenticated account
+            Test immediately with isolated demo data or sign in with your credentials
           </Text>
         </View>
       </ScrollView>
@@ -246,6 +259,9 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   continueBtn: {
+    marginBottom: Spacing.xs,
+  },
+  secondaryBtn: {
     marginBottom: Spacing.xs,
   },
   authNotice: {

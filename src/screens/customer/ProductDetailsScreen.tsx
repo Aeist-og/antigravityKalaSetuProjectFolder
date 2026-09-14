@@ -72,22 +72,25 @@ export const ProductDetailsScreen: React.FC<{ navigation: any; route: any }> = (
   };
 
   const handleAddToCart = async () => {
-    if (!user) {
-      Alert.alert('Sign In Required', 'Please sign in to add items to your cart.');
-      return;
-    }
     if (!product) return;
 
     setAddingToCart(true);
     try {
-      const price = product.pricing?.finalListingPrice || product.pricing?.suggestedRetailPrice || 0;
-      const res = await DatabaseService.addToCart(user.id, product.id, 1, price);
-      if (res.data) {
-        Alert.alert('Added to Cart! 🛒', `${product.info.titleEn || 'Craft item'} has been added to your cart.`, [
-          { text: 'Continue Shopping', style: 'cancel' },
-          { text: 'View Cart', onPress: () => navigation.navigate('Cart') },
-        ]);
-      }
+      const targetUserId = user?.id || 'guest_patron';
+      const price = product.pricing?.finalListingPrice || product.pricing?.suggestedRetailPrice || 2499;
+      await DatabaseService.addToCart(targetUserId, product.id, 1, price);
+      
+      Alert.alert(
+        'Added to Shopping Bag! 🛒',
+        `"${product.info.titleEn || product.info.titleHi || 'Handmade Craft'}" has been added to your shopping bag.`,
+        [
+          { text: 'Keep Exploring', style: 'cancel' },
+          { text: 'View Bag 🛍️', onPress: () => navigation.navigate('Cart') },
+        ]
+      );
+    } catch (e) {
+      console.warn('Error adding to cart:', e);
+      Alert.alert('Notice', 'Unable to add to cart. Please try again.');
     } finally {
       setAddingToCart(false);
     }
@@ -120,6 +123,15 @@ export const ProductDetailsScreen: React.FC<{ navigation: any; route: any }> = (
         title={product.info.craftType}
         onBack={() => navigation.goBack()}
         showLanguageToggle
+        rightAction={
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Cart')}
+            style={styles.cartHeaderBtn}
+            accessibilityLabel="View Bag"
+          >
+            <Text style={{ fontSize: 18 }}>🛒</Text>
+          </TouchableOpacity>
+        }
       />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -238,17 +250,25 @@ export const ProductDetailsScreen: React.FC<{ navigation: any; route: any }> = (
       {/* Bottom Sticky Action Bar */}
       <View style={[styles.bottomBar, Shadows.medium]}>
         <View style={styles.barPriceCol}>
-          <Text style={styles.barPriceLabel}>Total Price</Text>
+          <Text style={styles.barPriceLabel}>Listing Price</Text>
           <Text style={styles.barPriceVal}>₹{price.toLocaleString()}</Text>
         </View>
 
-        <Button
-          title={addingToCart ? 'Adding...' : '🛒 Add to Cart'}
-          onPress={handleAddToCart}
-          loading={addingToCart}
-          size="md"
-          style={styles.addToCartBtn}
-        />
+        <View style={styles.barBtnsRow}>
+          <Button
+            title={addingToCart ? 'Adding...' : '🛒 Add to Bag'}
+            onPress={handleAddToCart}
+            loading={addingToCart}
+            size="md"
+            style={styles.addToCartBtn}
+          />
+          <TouchableOpacity
+            style={styles.viewBagSmallBtn}
+            onPress={() => navigation.navigate('Cart')}
+          >
+            <Text style={styles.viewBagSmallText}>Bag 🛍️</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -468,9 +488,37 @@ const styles = StyleSheet.create({
   barPriceVal: {
     fontSize: Typography.fontSize.md,
     fontWeight: '800',
-    color: Colors.secondary,
+    color: Colors.primary,
+  },
+  barBtnsRow: {
+    flex: 1.8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   addToCartBtn: {
-    flex: 1.5,
+    flex: 1,
+  },
+  viewBagSmallBtn: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: Colors.primaryLight,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewBagSmallText: {
+    fontSize: Typography.fontSize.xs,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  cartHeaderBtn: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 });

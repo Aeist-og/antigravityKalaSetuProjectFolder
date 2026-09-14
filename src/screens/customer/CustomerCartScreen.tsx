@@ -33,21 +33,18 @@ export const CustomerCartScreen: React.FC<{ navigation: any }> = ({ navigation }
   const [selectedPayment, setSelectedPayment] = useState<'cod' | 'razorpay'>('cod');
 
   const loadCartData = async () => {
-    if (!user?.id) {
-      setLoading(false);
-      return;
-    }
+    const cartUserId = user?.id || 'guest_patron';
     try {
       const [cartRes, profRes] = await Promise.all([
-        DatabaseService.getCart(user.id),
-        DatabaseService.getCustomerProfile(user.id),
+        DatabaseService.getCart(cartUserId),
+        user?.id ? DatabaseService.getCustomerProfile(user.id) : Promise.resolve({ data: null, error: null }),
       ]);
       if (cartRes.data) setCart(cartRes.data);
       if (profRes.data) {
         setProfile(profRes.data);
         setDeliveryAddress(profRes.data.deliveryAddress || '42 Janpath Crafts Lane, Connaught Place, New Delhi');
-        setRecipientName(user.fullName || 'Customer Patron');
-        setRecipientPhone(user.phone || '+91 98765 43210');
+        setRecipientName(user?.fullName || 'Customer Patron');
+        setRecipientPhone(user?.phone || '+91 98765 43210');
       } else {
         setDeliveryAddress('42 Janpath Crafts Lane, Connaught Place, New Delhi');
         setRecipientName(user?.fullName || 'Customer Patron');
@@ -77,10 +74,6 @@ export const CustomerCartScreen: React.FC<{ navigation: any }> = ({ navigation }
   };
 
   const handleProceedToCheckout = () => {
-    if (!user) {
-      Alert.alert('Sign In Required', 'Please sign in to proceed with checkout.');
-      return;
-    }
     if (!cart || cart.items.length === 0) {
       Alert.alert('Cart is empty', 'Please add handcrafted items before proceeding.');
       return;
@@ -89,7 +82,7 @@ export const CustomerCartScreen: React.FC<{ navigation: any }> = ({ navigation }
   };
 
   const handleConfirmOrder = async () => {
-    if (!user) return;
+    const targetUserId = user?.id || 'guest_patron';
     if (!deliveryAddress.trim()) {
       Alert.alert('Shipping Address Required', 'Please enter your delivery destination.');
       return;
@@ -98,9 +91,9 @@ export const CustomerCartScreen: React.FC<{ navigation: any }> = ({ navigation }
     setPlacingOrder(true);
     try {
       const orderRes = await DatabaseService.createOrder({
-        customerId: user.id,
+        customerId: targetUserId,
         totalAmount: cart?.totalAmount || 0,
-        shippingAddress: `${recipientName} (${recipientPhone}) - ${deliveryAddress.trim()}`,
+        shippingAddress: `${recipientName || 'Customer Patron'} (${recipientPhone || '+91 98765 43210'}) - ${deliveryAddress.trim()}`,
         paymentMethod: selectedPayment === 'cod' ? 'Cash on Delivery (Pay to Artisan)' : 'Razorpay (Test Mode)',
         items: (cart?.items || []).map(it => ({
           productId: it.productId,
@@ -111,7 +104,7 @@ export const CustomerCartScreen: React.FC<{ navigation: any }> = ({ navigation }
       });
 
       if (orderRes.data) {
-        await DatabaseService.clearCart(user.id);
+        await DatabaseService.clearCart(targetUserId);
         setShowCheckoutModal(false);
         setCart(null);
 
@@ -125,7 +118,7 @@ export const CustomerCartScreen: React.FC<{ navigation: any }> = ({ navigation }
             },
             {
               text: 'Continue Shopping',
-              onPress: () => navigation.navigate('Discover'),
+              onPress: () => navigation.navigate('Home'),
               style: 'cancel',
             },
           ]

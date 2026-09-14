@@ -4,15 +4,19 @@ import { Colors, Typography, Spacing, Shadows } from '../constants/colors';
 import { Header } from '../components/common/Header';
 import { Button } from '../components/common/Button';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { DEMO_ACCOUNTS } from '../services/auth/authService';
 import { AppLanguage } from '../i18n';
 
 interface LanguageSelectScreenProps {
+  navigation?: any;
   onBack?: () => void;
   onConfirm?: () => void;
 }
 
-export const LanguageSelectScreen: React.FC<LanguageSelectScreenProps> = ({ onBack, onConfirm }) => {
+export const LanguageSelectScreen: React.FC<LanguageSelectScreenProps> = ({ navigation, onBack, onConfirm }) => {
   const { language, setLanguage, t } = useLanguage();
+  const { user, loginDemoAccount } = useAuth();
   const [selected, setSelected] = useState<AppLanguage>(language);
 
   const languages: { code: AppLanguage; label: string; script: string }[] = [
@@ -20,9 +24,23 @@ export const LanguageSelectScreen: React.FC<LanguageSelectScreenProps> = ({ onBa
     { code: 'en', label: 'English', script: 'English (Indian Commercial / Marketplace)' },
   ];
 
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else if (navigation?.canGoBack?.()) {
+      navigation.goBack();
+    }
+  };
+
   const handleConfirm = async () => {
     await setLanguage(selected);
-    if (onConfirm) onConfirm();
+    if (onConfirm) {
+      onConfirm();
+    } else if (navigation?.canGoBack?.()) {
+      navigation.goBack();
+    } else if (navigation?.navigate) {
+      navigation.navigate('RoleSelect');
+    }
   };
 
   return (
@@ -30,7 +48,7 @@ export const LanguageSelectScreen: React.FC<LanguageSelectScreenProps> = ({ onBa
       <Header
         title={t('language.title')}
         subtitle={t('language.subtitle')}
-        onBack={onBack}
+        onBack={handleBack}
         showLanguageToggle={false}
       />
 

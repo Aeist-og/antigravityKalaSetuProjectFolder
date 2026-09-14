@@ -12,7 +12,8 @@ import { Step3DescribeProductScreen } from '../screens/wizard/Step3DescribeProdu
 import { Step4ReviewProductScreen } from '../screens/wizard/Step4ReviewProductScreen';
 import { Step5MissingInfoScreen } from '../screens/wizard/Step5MissingInfoScreen';
 import { Step6SmartPricingScreen } from '../screens/wizard/Step6SmartPricingScreen';
-import { Step7ReviewPublishScreen } from '../screens/wizard/Step7ReviewPublishScreen';
+import { Step7TemplateSelectScreen } from '../screens/wizard/Step7TemplateSelectScreen';
+import { Step8CataloguePreviewScreen } from '../screens/wizard/Step8CataloguePreviewScreen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProductWizard'>;
 
@@ -47,8 +48,10 @@ export const WizardNavigator: React.FC<Props> = ({ navigation }) => {
       case 6:
         return <Step6SmartPricingScreen onBack={prevStep} onNext={nextStep} />;
       case 7:
+        return <Step7TemplateSelectScreen onBack={prevStep} onNext={nextStep} />;
+      case 8:
         return (
-          <Step7ReviewPublishScreen
+          <Step8CataloguePreviewScreen
             onBack={prevStep}
             onJumpToStep={step => setCurrentStep(step)}
             onFinish={handleFinish}

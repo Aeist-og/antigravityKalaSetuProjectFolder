@@ -8,7 +8,7 @@ interface ProgressBarProps {
   totalSteps?: number;
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ step, totalSteps = 7 }) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ step, totalSteps = 8 }) => {
   const { t } = useLanguage();
   const progressPercent = Math.min(Math.max((step / totalSteps) * 100, 5), 100);
 

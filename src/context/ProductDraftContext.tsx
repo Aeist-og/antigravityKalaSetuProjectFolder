@@ -44,6 +44,7 @@ const createCleanDraft = (): ActiveProductDraft => ({
   pricing: { ...initialPricing },
   currentStep: 1,
   status: 'draft',
+  selectedTemplate: 'heritage',
   updatedAt: new Date().toISOString(),
 });
 
@@ -58,6 +59,7 @@ interface ProductDraftContextType {
   setVoiceTranscript: (transcript: string) => void;
   updateProductInfo: (info: Partial<ProductInformation>) => void;
   updatePricing: (pricing: Partial<PricingCalculationInput>) => void;
+  setTemplate: (templateId: string) => void;
   resetDraft: () => Promise<void>;
   saveDraftToDatabase: () => Promise<{ success: boolean; error?: string }>;
   publishProduct: () => Promise<{ success: boolean; error?: string }>;
@@ -108,7 +110,7 @@ export const ProductDraftProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const nextStep = () => {
-    const next = Math.min(7, currentStep + 1);
+    const next = Math.min(8, currentStep + 1);
     setCurrentStep(next);
   };
 
@@ -167,6 +169,13 @@ export const ProductDraftProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
   };
 
+  const setTemplate = (templateId: string) => {
+    updateAndPersist(prev => ({
+      ...prev,
+      selectedTemplate: templateId,
+    }));
+  };
+
   const resetDraft = async () => {
     const clean = createCleanDraft();
     setDraft(clean);
@@ -197,8 +206,8 @@ export const ProductDraftProvider: React.FC<{ children: React.ReactNode }> = ({ 
         'DRAFT_SAVED',
         `Draft Saved: ${draft.info.titleEn || 'Handcrafted Craft'}`,
         `प्रारूप सहेजा गया: ${draft.info.titleHi || 'हस्तशिल्प'}`,
-        `Step ${currentStep}/7 saved safely`,
-        `चरण ${currentStep}/7 सुरक्षित सहेजा गया`,
+        `Step ${currentStep}/8 saved safely`,
+        `चरण ${currentStep}/8 सुरक्षित सहेजा गया`,
         'info'
       );
 
@@ -252,6 +261,7 @@ export const ProductDraftProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setVoiceTranscript,
         updateProductInfo,
         updatePricing,
+        setTemplate,
         resetDraft,
         saveDraftToDatabase,
         publishProduct,

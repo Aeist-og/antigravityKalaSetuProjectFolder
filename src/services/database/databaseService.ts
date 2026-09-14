@@ -57,6 +57,10 @@ export class DatabaseService {
     }
   }
 
+  public static isUuid(id?: string): boolean {
+    return Boolean(id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+  }
+
   // ==========================================
   // USER PROFILES
   // ==========================================
@@ -1626,7 +1630,7 @@ export class DatabaseService {
   // ==========================================
 
   public static async getCustomerProfile(customerId: string): Promise<DbResult<CustomerProfile>> {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(customerId)) {
       try {
         const { data, error } = await supabase
           .from('customer_profiles')
@@ -1880,7 +1884,7 @@ export class DatabaseService {
   // ==========================================
 
   public static async getCart(userId: string): Promise<DbResult<Cart>> {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(userId)) {
       try {
         // Ensure cart exists
         let { data: cart } = await supabase
@@ -2041,7 +2045,11 @@ export class DatabaseService {
         }
       : undefined;
 
-    if (isSupabaseConfigured) {
+    const finalPrice = unitPrice > 0
+      ? unitPrice
+      : (prod?.pricing?.finalListingPrice || prod?.pricing?.suggestedRetailPrice || 2499);
+
+    if (isSupabaseConfigured && this.isUuid(userId)) {
       try {
         let { data: cart } = await supabase
           .from('carts')
@@ -2076,7 +2084,7 @@ export class DatabaseService {
                 cart_id: cart.id,
                 product_id: productId,
                 quantity: finalQuantity,
-                unit_price: unitPrice,
+                unit_price: finalPrice,
                 updated_at: new Date().toISOString(),
               },
               { onConflict: 'cart_id,product_id' }
@@ -2090,7 +2098,7 @@ export class DatabaseService {
               cartId: data.cart_id,
               productId: data.product_id,
               quantity: data.quantity,
-              unitPrice: Number(data.unit_price),
+              unitPrice: Number(data.unit_price) || finalPrice,
               product: productSummary,
               createdAt: data.created_at,
               updatedAt: data.updated_at,
@@ -2141,7 +2149,7 @@ export class DatabaseService {
     let item: CartItem;
     if (existingIdx >= 0) {
       cart.items[existingIdx].quantity += quantity;
-      cart.items[existingIdx].unitPrice = unitPrice || cart.items[existingIdx].unitPrice;
+      cart.items[existingIdx].unitPrice = finalPrice || cart.items[existingIdx].unitPrice;
       cart.items[existingIdx].product = productSummary || cart.items[existingIdx].product;
       cart.items[existingIdx].updatedAt = new Date().toISOString();
       item = cart.items[existingIdx];
@@ -2151,7 +2159,7 @@ export class DatabaseService {
         cartId: cart.id,
         productId,
         quantity,
-        unitPrice,
+        unitPrice: finalPrice,
         product: productSummary,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -2228,7 +2236,7 @@ export class DatabaseService {
   }
 
   public static async clearCart(userId: string): Promise<DbResult<boolean>> {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(userId)) {
       try {
         const { data: cart } = await supabase.from('carts').select('id').eq('user_id', userId).maybeSingle();
         if (cart) {
@@ -2255,7 +2263,7 @@ export class DatabaseService {
   // ==========================================
 
   public static async getFavourites(userId: string): Promise<DbResult<FavouriteItem[]>> {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(userId)) {
       try {
         const { data, error } = await supabase
           .from('favourites')
@@ -2323,7 +2331,7 @@ export class DatabaseService {
     productId: string,
     artisanId?: string
   ): Promise<DbResult<{ isFavourite: boolean }>> {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(userId)) {
       try {
         const { data: existing } = await supabase
           .from('favourites')
@@ -2375,7 +2383,7 @@ export class DatabaseService {
     let savedOrder: Order | null = null;
     const now = new Date().toISOString();
 
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(input.customerId)) {
       try {
         const { data: orderData, error: orderErr } = await supabase
           .from('orders')
@@ -2478,7 +2486,7 @@ export class DatabaseService {
   }
 
   public static async getCustomerOrders(customerId: string): Promise<DbResult<Order[]>> {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && this.isUuid(customerId)) {
       try {
         const { data, error } = await supabase
           .from('orders')

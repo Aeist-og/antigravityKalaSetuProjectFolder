@@ -56,6 +56,7 @@ export interface ActiveProductDraft {
   info: ProductInformation;
   pricing: PricingCalculationResult;
   status: ProductStatus;
+  selectedTemplate?: string;
   currentStep: number;
   updatedAt: string;
 }

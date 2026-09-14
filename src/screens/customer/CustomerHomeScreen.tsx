@@ -93,6 +93,15 @@ export const CustomerHomeScreen: React.FC<{ navigation: any }> = ({ navigation }
         title="KalaSetu Marketplace"
         subtitle="Authentic handcrafted treasures of Bharat"
         showLanguageToggle
+        rightAction={
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Cart')}
+            style={styles.cartHeaderBtn}
+            accessibilityLabel="Shopping Bag"
+          >
+            <Text style={{ fontSize: 18 }}>🛒</Text>
+          </TouchableOpacity>
+        }
       />
 
       <ScrollView
@@ -570,6 +579,13 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.xs,
     fontWeight: '700',
     color: Colors.primary,
+  },
+  cartHeaderBtn: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
 });
 

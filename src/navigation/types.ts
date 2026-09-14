@@ -3,6 +3,7 @@ import { UserRole } from '../models/auth';
 
 export type AuthStackParamList = {
   Welcome: undefined;
+  LanguageSelect: undefined;
   RoleSelect: undefined;
   Login: { role?: UserRole } | undefined;
   SignUp: { role?: UserRole } | undefined;
@@ -53,4 +54,5 @@ export type RootStackParamList = {
   DigitalShowcase: { exhibitionId?: string; artisanId?: string };
   OndcReadiness: { productId?: string } | undefined;
   KalaChannel: undefined;
+  Cart: undefined;
 };

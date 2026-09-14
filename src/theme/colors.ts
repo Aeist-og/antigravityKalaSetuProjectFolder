@@ -1,12 +1,12 @@
 export const Colors = {
-  // Modern Plum / Berry & Reddish Pink Palette
-  primary: '#db1b4bff',        // Deep Plum / Royal Berry
-  primaryDark: '#d81858ff',    // Rich Midnight Plum
-  primaryLight: '#F7EDF3',   // Subtle Berry wash
+  // Vibrant Indian Red Rose & Royal Crimson Palette (Authentic Red Rose, not plum)
+  primary: '#E11D48',        // Vibrant Red Rose (Gulabi Lal)
+  primaryDark: '#BE123C',    // Rich Crimson Velvet Rose
+  primaryLight: '#FFF1F2',   // Delicate Fresh Rose Petal wash
 
-  accent: '#E11D48',         // Reddish Pink / Vibrant Rose
-  accentLight: '#FFE4E6',    // Pale Rose wash
-  accentGold: '#F59E0B',     // Warm Yellow / Golden Honey
+  accent: '#F43F5E',         // Luminous Bloom Rose Coral
+  accentLight: '#FFE4E6',    // Soft Pale Rose wash
+  accentGold: '#F59E0B',     // Zari Antique Gold Accent
 
   secondary: '#2563EB',      // Confident Indigo / Blue Accent
   secondaryLight: '#EFF6FF', // Soft Sky/Blue wash
@@ -25,7 +25,7 @@ export const Colors = {
 
   // Borders
   border: '#E5E7EB',         // Modern clean border
-  borderFocus: '#db1b4bff',    // Plum focus ring
+  borderFocus: '#E11D48',    // Red Rose focus ring
   borderLight: '#F3F4F6',    // Subtle clean divider
 
   // Semantic Status
@@ -42,7 +42,7 @@ export const Colors = {
   infoLight: '#EFF6FF',
 
   // Transparency & Overlays
-  overlay: 'rgba(236, 23, 59, 0.86)',
-  glass: 'rgba(255, 255, 255, 0.92)',
+  overlay: 'rgba(190, 18, 60, 0.85)',
+  glass: 'rgba(255, 255, 255, 0.94)',
 };
 

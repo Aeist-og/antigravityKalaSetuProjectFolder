@@ -56,10 +56,11 @@ export const CustomerFavouritesScreen: React.FC<{ navigation: any }> = ({ naviga
   };
 
   const handleAddToCart = async (item: FavouriteItem) => {
-    if (!user || !item.productId) return;
+    if (!item.productId) return;
+    const targetUserId = user?.id || 'guest_patron';
     const price = item.product?.finalListingPrice || 500;
-    await DatabaseService.addToCart(user.id, item.productId, 1, price);
-    Alert.alert('Added to Cart! 🛒', 'Item is now ready for checkout.');
+    await DatabaseService.addToCart(targetUserId, item.productId, 1, price);
+    Alert.alert('Added to Shopping Bag! 🛒', 'Item is now in your shopping bag ready for checkout.');
   };
 
   return (

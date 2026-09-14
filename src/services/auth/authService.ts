@@ -300,7 +300,15 @@ export class AuthService {
         phone: formattedPhone,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('Unsupported phone provider') || (error as { code?: string }).code === 'phone_provider_disabled') {
+          return {
+            success: false,
+            errorMessage: 'Supabase Phone provider is not enabled. Please sign in with Email & Password or use the Demo Accounts.',
+          };
+        }
+        throw error;
+      }
       return { success: true };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to send OTP';
